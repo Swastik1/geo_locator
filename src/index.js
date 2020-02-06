@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import SeasonDisplay from "./SeasonDisplay"
+import Loader from './Loader';
 
 // FUNCTION COMPONENT
 
@@ -16,26 +18,40 @@ import ReactDOM from "react-dom";
 // CLASS COMPONENT
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { lat: null, errorMessage: "" };
-  }
+
+  state = {lat:null, errorMessage: ""}
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { lat: null, errorMessage: "" };
+  
 
   componentDidMount() {
     window.navigator.geolocation.getCurrentPosition(
-      position => this.setState({ lat: position.coords.lat }),
+      position => this.setState({ lat: position.coords.latitude }),
       err => this.setState({ errorMessage: err.message })
-    );
-  }
-  render() {
-    if (this.state.errorMessage && !this.state.lat) {
-      return <div>Error: {this.state.errorMessage}</div>;
+      );
     }
-    if (!this.state.errorMessage && this.state.lat) {
-      return <div>Lattitude: {this.state.lat}</div>;
+
+    renderContent(){
+      if (this.state.errorMessage && !this.state.lat) {
+        return <div>Error: {this.state.errorMessage}</div>
+  
+      }
+      if (!this.state.errorMessage && this.state.lat) {
+        return < SeasonDisplay lat = {this.lat} />
+      }
+      return <Loader />
     }
-    return <div>Loading...</div>;
+
+
+    render() {
+      return(
+        <div className="border red">
+            {this.renderContent()}
+        </div>
+      )
   }
 }
 
 ReactDOM.render(<App />, document.querySelector("#root"));
+
